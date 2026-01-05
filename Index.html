@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>RS St. Gabriel Kewapante</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', Arial, sans-serif;
+}
+
+body{
+    background:#f2f8f7;
+    color:#333;
+}
+
+/* ===== HEADER DENGAN FOTO SUASANA RS ===== */
+.hero{
+    height:300px;
+    background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        url("https://tse3.mm.bing.net/th/id/OIP.tTKLHXPq4JeGiQ1mH-yK-wHaEK?pid=Api&P=0&h=220") center/cover no-repeat; /* <-- GANTI DENGAN FOTO SUASANA RS */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:white;
+}
+
+.hero h1{
+    font-size:40px;
+    margin-bottom:10px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* Membuat teks lebih terlihat di foto */
+}
+
+.hero p{
+    font-size:18px;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+}
+
+/* ===== CONTAINER ===== */
+.container{
+    max-width:1200px;
+    margin:-60px auto 40px;
+    display:grid;
+    grid-template-columns:1fr 1.3fr;
+    gap:30px;
+    padding:0 20px;
+}
+
+/* ===== CARD ===== */
+.card{
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+.card h2{
+    color:#16a085;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+/* ===== FORM ===== */
+label{
+    font-weight:600;
+    margin-top:12px;
+    display:block;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+textarea{
+    resize:none;
+}
+
+button{
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    background:#16a085;
+    color:white;
+    border:none;
+    border-radius:30px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#138d75;
+}
+
+/* ===== TABLE ===== */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:14px;
+}
+
+th{
+    background:#16a085;
+    color:white;
+}
+
+th, td{
+    padding:10px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+/* ===== FOOTER ===== */
+footer{
+    text-align:center;
+    padding:20px;
+    background:#e8f7f3;
+    font-size:14px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="hero">
+    <div>
+        <h1>RS St. Gabriel Kewapante</h1>
+        <p>Sistem Pendaftaran Pasien</p>
+    </div>
+</header>
+
+<!-- KONTEN -->
+<section class="container">
+
+    <!-- FORM PENDAFTARAN -->
+    <div class="card">
+        <h2>Form Pendaftaran Pasien</h2>
+        <form id="formPasien">
+            <label>Nama Pasien</label>
+            <input type="text" id="nama" required>
+
+            <label>NIK</label>
+            <input type="text" id="nik" required>
+
+            <label>Jenis Layanan</label>
+            <select id="layanan">
+                <option>IGD</option>
+                <option>Rawat Jalan</option>
+                <option>Rawat Inap</option>
+            </select>
+
+            <label>Metode Pembayaran</label>
+            <select id="pembayaran">
+                <option>BPJS</option>
+                <option>Umum</option>
+            </select>
+
+            <label>Keluhan</label>
+            <textarea id="keluhan" rows="4"></textarea>
+
+            <button type="submit">Simpan Data Pasien</button>
+        </form>
+    </div>
+
+    <!-- DATA PASIEN -->
+    <div class="card">
+        <h2>Data Pasien Terdaftar</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>NIK</th>
+                    <th>Layanan</th>
+                    <th>Pembayaran</th>
+                    <th>Keluhan</th>
+                </tr>
+            </thead>
+            <tbody id="dataPasien"></tbody>
+        </table>
+    </div>
+
+</section>
+
+<footer>
+    © 2026 RS St. Gabriel Kewapante – Maumere
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+let pasien = JSON.parse(localStorage.getItem("pasien")) || [];
+
+function tampilData() {
+    const tbody = document.getElementById("dataPasien");
+    tbody.innerHTML = "";
+
+    pasien.forEach((p, i) => {
+        tbody.innerHTML += `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${p.nama}</td>
+            <td>${p.nik}</td>
+            <td>${p.layanan}</td>
+            <td>${p.pembayaran}</td>
+            <td>${p.keluhan}</td>
+        </tr>`;
+    });
+}
+
+document.getElementById("formPasien").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const data = {
+        nama: nama.value,
+        nik: nik.value,
+        layanan: layanan.value,
+        pembayaran: pembayaran.value,
+        keluhan: keluhan.value
+    };
+
+    pasien.push(data);
+    localStorage.setItem("pasien", JSON.stringify(pasien));
+
+    alert("Data pasien berhasil disimpan");
+    this.reset();
+    tampilData();
+});
+
+tampilData();
+</script>
+
+</body>
+</html>
